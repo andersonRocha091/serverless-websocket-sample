@@ -3,6 +3,7 @@
 const Responses = require('../common/API_Responses');
 
 const Dynamo = require('../common/Dynamo');
+const websocket = require('../common/websocketMessage');
 
 const tableName = process.env.tableName;
 
@@ -29,8 +30,9 @@ exports.handler = async event => {
     };
     console.log('data: ', data);
     await Dynamo.write(data, tableName);
-
-    await WebSocket.send({domainName, stage, connectionID, message: "This is a reply to your message"})
+    console.log('Replying: ',{domainName, stage, connectionID, message: "This is a reply to your message"});
+    const result = await websocket.send({domainName, stage, connectionID, message: "This is a reply to your message"})
+    console.log('send back result: ', result);
 
     return Responses._200({message: 'got a message'});
   } catch (error) {
