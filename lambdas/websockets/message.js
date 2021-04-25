@@ -12,13 +12,13 @@ exports.handler = async event => {
   console.log('event: ',event)
 
   const { connectionId: connectionID } = event.requestContext;
-
+  console.log('connection id: ', connectionID);
   const body = JSON.parse(event.body);
-  
+  console.log('body: ', body);
   //receiving messages on body to be stored on list array created on connection
 
   try {
-    const record = await Dynamo.get(connectionID, TableName);
+    const record = await Dynamo.get(connectionID, tableName);
     const messages = record.messages;
 
     messages.push(body.message);
@@ -27,7 +27,7 @@ exports.handler = async event => {
       ...record,
       messages
     };
-
+    console.log('data: ', data);
     await Dynamo.write(data, tableName);
     return Responses._200({message: 'got a message'});
   } catch (error) {
