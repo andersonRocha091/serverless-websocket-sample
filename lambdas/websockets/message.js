@@ -19,7 +19,7 @@ exports.handler = async event => {
 
   try {
     const record = await Dynamo.get(connectionID, tableName);
-    const messages = record.messages;
+    const {messages, domainName, stage} = record;
 
     messages.push(body.message);
 
@@ -29,6 +29,9 @@ exports.handler = async event => {
     };
     console.log('data: ', data);
     await Dynamo.write(data, tableName);
+
+    await WebSocket.send({domainName, stage, connectionID, message: "This is a reply to your message"})
+
     return Responses._200({message: 'got a message'});
   } catch (error) {
     return Responses._400({ message: "could not be received!" });
