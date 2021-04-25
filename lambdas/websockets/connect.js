@@ -11,12 +11,14 @@ exports.handler = async event => {
   // message of succesfull connection
   console.log('event: ',event)
   //getting the connection id
-  const { connectionId: connectionID } = event.requestContext; 
+  const { connectionId: connectionID , domainName, stage} = event.requestContext; 
   
   const data = {
     ID: connectionID,
     date: Date.now(),
-    messages:[]
+    messages:[],
+    domainName,
+    stage
   }
   
   //writing it to dynamo
